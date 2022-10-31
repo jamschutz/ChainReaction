@@ -871,6 +871,7 @@ GameObject:
   - component: {fileID: 873648053}
   - component: {fileID: 873648052}
   - component: {fileID: 873648056}
+  - component: {fileID: 873648057}
   m_Layer: 0
   m_Name: Face
   m_TagString: Untagged
@@ -988,6 +989,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eyePosition: 0
+  eyeMoveSpeed: 0.037
+--- !u!114 &873648057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 873648051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4737624552f8a2546987922bc1ceb016, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseSensitivity: {x: 0, y: 0}
+  rightStickSensitivity: {x: 3, y: -1.5}
 --- !u!1 &946486422
 GameObject:
   m_ObjectHideFlags: 0

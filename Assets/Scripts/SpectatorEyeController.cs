@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(InputController))]
 public class SpectatorEyeController : MonoBehaviour
 {
     public enum EyePosition {
@@ -9,10 +10,17 @@ public class SpectatorEyeController : MonoBehaviour
     }
 
     public EyePosition eyePosition;
+    [Range(0,1)]
+    public float eyeMoveSpeed;
+
+    // input controller
+    InputController input;
 
     // eyes
     Transform leftEye;
     Transform rightEye;
+    Transform leftEyeTarget;
+    Transform rightEyeTarget;
 
     // left eye positions
     Transform neutral_left;
@@ -64,11 +72,55 @@ public class SpectatorEyeController : MonoBehaviour
         downRight_right = transform.Find("downright_right").transform;
         right_right = transform.Find("right_right").transform;
         upRight_right = transform.Find("upright_right").transform;
+
+        // init targets
+        leftEyeTarget = neutral_left;
+        rightEyeTarget = neutral_right;
+
+        // init input
+        input = GetComponent<InputController>();
     }
 
 
     void Update()
     {
+        // neutral
+        if(GetXMove() == 0 && GetYMove() == 0) {
+            eyePosition = EyePosition.Neutral;
+        }
+        // up
+        else if(GetXMove() == 0 && GetYMove() == 1) {
+            eyePosition = EyePosition.Up;
+        }
+        // up left
+        else if(GetXMove() == -1 && GetYMove() == 1) {
+            eyePosition = EyePosition.UpLeft;
+        }
+        // left
+        else if(GetXMove() == -1 && GetYMove() == 0) {
+            eyePosition = EyePosition.Left;
+        }
+        // down left
+        else if(GetXMove() == -1 && GetYMove() == -1) {
+            eyePosition = EyePosition.DownLeft;
+        }
+        // down
+        else if(GetXMove() == 0 && GetYMove() == -1) {
+            eyePosition = EyePosition.Down;
+        }
+        // down right
+        else if(GetXMove() == 1 && GetYMove() == -1) {
+            eyePosition = EyePosition.DownRight;
+        }
+        // right
+        else if(GetXMove() == 1 && GetYMove() == 0) {
+            eyePosition = EyePosition.Right;
+        }
+        // up right
+        else if(GetXMove() == 1 && GetYMove() == 1) {
+            eyePosition = EyePosition.UpRight;
+        }
+
         UpdateEyePositions();
     }
 
@@ -77,44 +129,61 @@ public class SpectatorEyeController : MonoBehaviour
     {
         switch(eyePosition) {
             case EyePosition.Neutral:
-                leftEye.position  = neutral_left.position;
-                rightEye.position = neutral_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  neutral_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, neutral_right.position, eyeMoveSpeed);
                 break;
             case EyePosition.Up:
-                leftEye.position  = up_left.position;
-                rightEye.position = up_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  up_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, up_right.position, eyeMoveSpeed);
                 break;
             case EyePosition.UpLeft:
-                leftEye.position  = upLeft_left.position;
-                rightEye.position = upLeft_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  upLeft_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, upLeft_right.position, eyeMoveSpeed);
                 break;
             case EyePosition.Left:
-                leftEye.position  = left_left.position;
-                rightEye.position = left_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  left_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, left_right.position, eyeMoveSpeed);
                 break;
             case EyePosition.DownLeft:
-                leftEye.position  = downLeft_left.position;
-                rightEye.position = downLeft_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  downLeft_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, downLeft_right.position, eyeMoveSpeed);
                 break;
             case EyePosition.Down:
-                leftEye.position  = down_left.position;
-                rightEye.position = down_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  down_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, down_right.position, eyeMoveSpeed);
                 break;
             case EyePosition.DownRight:
-                leftEye.position  = downRight_left.position;
-                rightEye.position = downRight_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  downRight_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, downRight_right.position, eyeMoveSpeed);
                 break;
             case EyePosition.Right:
-                leftEye.position  = right_left.position;
-                rightEye.position = right_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  right_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, right_right.position, eyeMoveSpeed);
                 break;
             case EyePosition.UpRight:
-                leftEye.position  = upRight_left.position;
-                rightEye.position = upRight_right.position;
+                leftEye.position  = Vector3.Lerp(leftEye.position,  upRight_left.position,  eyeMoveSpeed);
+                rightEye.position = Vector3.Lerp(rightEye.position, upRight_right.position, eyeMoveSpeed);
                 break;
             default:
                 Debug.LogError($"unknown eye position: {eyePosition.ToString()}");
                 break;
         }
+    }
+
+
+    int GetXMove()
+    {
+        if(input.Current.Movement.x < -float.Epsilon) return -1;
+        if(input.Current.Movement.x > float.Epsilon) return 1;
+
+        return 0;
+    }
+
+    int GetYMove()
+    {
+        if(input.Current.Movement.y < -float.Epsilon) return -1;
+        if(input.Current.Movement.y > float.Epsilon) return 1;
+
+        return 0;
     }
 }
